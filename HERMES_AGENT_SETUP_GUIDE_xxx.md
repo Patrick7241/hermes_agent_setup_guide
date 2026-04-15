@@ -78,7 +78,7 @@ model:
   base_url: "https://your-endpoint.example.com/v1"
 
   # API 密钥 - 可直接写值，或引用环境变量 ${OPENAI_API_KEY}
-  api_key: "${OPENAI_API_KEY}"
+  api_key: "YOUR_API_KEY_HERE"
 
   # 上下文窗口大小（可选，默认自动检测）
   context_length: 128000
@@ -140,23 +140,38 @@ python hermes doctor
 ## 启动 Hermes
 
 ```bash
-# 方法1：直接运行
+# 方法1：直接运行（默认使用当前目录作为工作目录）
 cd ~/development/hermes-agent
-python hermes
+python hermes  # 终端工作目录 = ~/development/hermes-agent
 
-# 方法2：创建快捷脚本
-cat > ~/run_hermes.sh << 'EOF'
-#!/bin/bash
-cd ~/development/hermes-agent
-python hermes "$@"
-EOF
-chmod +x ~/run_hermes.sh
-~/run_hermes.sh
+# 方法2：更方便的方式
+# 在任意目录启动 hermes，终端工作目录就是该目录
+cd ~/development/xxx
+python ~/development/hermes-agent/hermes  # 终端工作目录 = ~/development/xxx
+```
 
-# 方法3：创建 shell 别名
-echo 'alias hermes="cd ~/development/hermes-agent && python hermes"' >> ~/.zshrc
-source ~/.zshrc
-hermes
+### 配置终端工作目录为当前目录（推荐）
+
+在 `~/.hermes/config.yaml` 中添加：
+
+```yaml
+terminal:
+  backend: local
+  cwd: "."  # 使用当前目录（即启动 hermes 时的 pwd）
+  timeout: 180
+```
+
+这样无论你在哪个目录启动 hermes，终端工具都会使用该目录作为工作目录。
+
+**示例：**
+
+```bash
+# 在项目目录启动
+cd ~/development/xxx
+python ~/development/hermes-agent/hermes
+
+# hermes 启动后，终端命令会在 ~/development/xxx 下执行
+# pwd 显示的就是 ~/development/xxx
 ```
 
 ## 辅助模型配置（可选但重要）
@@ -352,7 +367,7 @@ model:
   default: "Qwen/Qwen2.5-72B-Instruct"
   provider: custom
   base_url: "https://your-vllm-server.example.com/v1"
-  api_key: "${OPENAI_API_KEY}"
+  api_key: "your-api-key"
   context_length: 131072
   max_tokens: 8192
 
@@ -391,7 +406,7 @@ model:
   default: "minimax-m2.5"
   provider: custom
   base_url: "https://your-endpoint.example.com/v1"
-  api_key: "${OPENAI_API_KEY}"
+  api_key: "your-main-api-key"
   context_length: 128000
 
 compression:
@@ -504,7 +519,3 @@ python -c "import yaml; yaml.safe_load(open('~/.hermes/config.yaml'))"
 - **示例配置**: ~/development/hermes-agent/cli-config.yaml.example
 
 ---
-
-**版本**: Hermes Agent v0.9.0 | Python 3.10+
-
-**最后更新**: 2026-04-14
