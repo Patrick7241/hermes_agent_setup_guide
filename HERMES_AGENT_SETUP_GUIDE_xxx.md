@@ -144,7 +144,16 @@ python hermes doctor
 cd ~/development/hermes-agent
 python hermes  # 终端工作目录 = ~/development/hermes-agent
 
-# 方法2：更方便的方式
+# 方法2：创建快捷脚本
+cat > ~/run_hermes.sh << 'EOF'
+#!/bin/bash
+cd ~/development/hermes-agent
+python hermes "$@"
+EOF
+chmod +x ~/run_hermes.sh
+~/run_hermes.sh
+
+# 方法3：更方便的方式
 # 在任意目录启动 hermes，终端工作目录就是该目录
 cd ~/development/xxx
 python ~/development/hermes-agent/hermes  # 终端工作目录 = ~/development/xxx
